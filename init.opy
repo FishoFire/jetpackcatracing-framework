@@ -14,10 +14,13 @@ rule "Init Global":
 rule "Init Player":
     @Event playerJoined
     @Condition eventPlayer.isDummy() == false
-    
+    @Condition getTotalTimeElapsed() > 1
+
     eventPlayer.disableGamemodeHud()
     eventPlayer.disableGamemodeInWorldUi()
     eventPlayer.disableMessages()
     eventPlayer.disablePlayerCollision()
     eventPlayer.setStatusEffect(null, Status.INVINCIBLE, 999999)
     chaseAtRate(eventPlayer.Timer, 0, 1, ChaseRateReeval.NONE)
+      
+    FullReset()

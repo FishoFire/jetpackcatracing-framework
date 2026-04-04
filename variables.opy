@@ -25,6 +25,10 @@ playervar GoalCheckpoint 6
 playervar AfterNextCheckpoint 7
 playervar LastCheckpoint 8
 
+# Subroutines
+subroutine FullReset
+subroutine GoToResetPoint # teleport back to lastpoint
+subroutine ResetSpeed
 
 #!define LeftAlign100 "                                                                                                    "
 ##!define LeftAlign100 ""

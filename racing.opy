@@ -9,12 +9,11 @@ rule "anti crash":
     waitUntil(getServerLoad() < 230, Math.INFINITY)
     setSlowMotion(100)
 
-
 def ResetSpeed():
     eventPlayer.setMoveSpeed(100)
     eventPlayer.SpeedMultiplier = 100
 
-def GoToResetPoint():
+def GoToResetPoint(): # go to LastCheckpoint
     eventPlayer.teleport(eventPlayer.LastCheckpoint)
     eventPlayer.startForcingPosition(eventPlayer.LastCheckpoint)
     wait()
@@ -40,23 +39,14 @@ def FullReset():
     eventPlayer.Timer = 0
     eventPlayer.High_Score = []
     eventPlayer.IsRacing = false
-    GoToResetPoint()
+    GoToResetPoint() # LastCheckpoint is first reset so this works
     ResetSpeed()
-
-rule "Start":
-    @Event eachPlayer
-    @Condition eventPlayer.hasSpawned() 
-    @Condition getTotalTimeElapsed() > 1
-    FullReset()
-
 
 rule "Reset - full":
     @Event eachPlayer
     @Condition eventPlayer.isHoldingButton(Button.RELOAD) 
-    
     wait(0.5, Wait.ABORT_WHEN_FALSE)
     FullReset()
-
 
 rule "Arrive at Checkpoint":
     @Event eachPlayer
@@ -76,8 +66,6 @@ rule "Arrive at Checkpoint":
     eventPlayer.GoalCheckpoint = eventPlayer.AfterNextCheckpoint
     eventPlayer.AfterNextCheckpoint = Checkpoints[eventPlayer.ReturnCheckpointIndex + 1]
 
-
-
 rule "Finish":
     @Event eachPlayer
     @Condition not eventPlayer.GoalCheckpoint
@@ -92,7 +80,6 @@ rule "Finish":
     Lobby_High.append(eventPlayer.Timer)
     Lobby_Best = eventPlayer if sorted(Lobby_High)[0] == sorted(eventPlayer.High_Score)[0] else Lobby_Best
     lbl_0:
-
 
 
 # decrease to make it wait more often if you have load problems, keep at full int numbers no floats
