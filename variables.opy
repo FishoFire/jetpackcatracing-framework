@@ -18,13 +18,13 @@ playervar High_Score 2
 playervar IsRacing 3
 playervar SpeedMultiplier 4
 playervar ReturnCheckpointIndex 5
-playervar CurrentCheckpointVector 6
-playervar NextCheckpointVector 7
+playervar Last_checkpoint 6
+playervar Goal_checkpoint 7
 
 
 #!define LeftAlign100 "                                                                                                    "
 
-enum Customize: # always add new options on end so previously configured colors dont mess up
+enum Customize: 
     credit_name,
     credit_code,
     dsc,
