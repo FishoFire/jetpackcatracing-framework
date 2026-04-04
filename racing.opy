@@ -1,12 +1,5 @@
 #!mainFile "main.opy"
 
-
-rule "Hanamura":
-    @Condition getCurrentMap() == Map.HANAMURA
-    
-    StartVector = vect(69.447, 13.709, 3.227)
-    Checkpoints = [vect(55.31, 11.133, 9.266), vect(29.707, 8.628, 11.127), vect(5.313, 4.482, 2.078), vect(-4.063, 4.042, -8.343), vect(-17.38, 0.756, -17.216), vect(-26.126, 5.056, -50.521), vect(-26.721, 3.746, -67.521), vect(-20.674, 3.591, -76.343), vect(-0.854, 5.924, -82.08), vect(14.102, 6.337, -74.915), vect(28.236, 4.267, -60.297), vect(32.851, 4.951, -42.201), vect(25.275, 3.13, -30.573), vect(11.991, 2.447, -24.385), vect(16.174, 2.392, -6.394), vect(28.754, 3.516, -3.708), vect(39.216, 3.909, -11.624), vect(57.521, 1.663, -13.342), vect(67.34, 3.716, -5.188), vect(68.84, 6.15, 7.811)]
-
 def Reset():
     eventPlayer.teleport(StartVector)
     eventPlayer.startForcingPosition(StartVector)
