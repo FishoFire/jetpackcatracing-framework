@@ -1,45 +1,62 @@
 #!mainFile "main.opy"
 
+rule "anti crash":
+	@Event global
+	@Condition getServerLoad() > 250
+    wait(1, Wait.ABORT_WHEN_FALSE)
+    smallMessage(getAllPlayers(), "anti-crash system activated")
+    setSlowMotion(10)
+    waitUntil(getServerLoad() < 230, Math.INFINITY)
+    setSlowMotion(100)
 
-rule "Hanamura":
-    @Condition getCurrentMap() == Map.HANAMURA
-    
-    StartVector = vect(69.447, 13.709, 3.227)
-    Checkpoints = [vect(55.31, 11.133, 9.266), vect(29.707, 8.628, 11.127), vect(5.313, 4.482, 2.078), vect(-4.063, 4.042, -8.343), vect(-17.38, 0.756, -17.216), vect(-26.126, 5.056, -50.521), vect(-26.721, 3.746, -67.521), vect(-20.674, 3.591, -76.343), vect(-0.854, 5.924, -82.08), vect(14.102, 6.337, -74.915), vect(28.236, 4.267, -60.297), vect(32.851, 4.951, -42.201), vect(25.275, 3.13, -30.573), vect(11.991, 2.447, -24.385), vect(16.174, 2.392, -6.394), vect(28.754, 3.516, -3.708), vect(39.216, 3.909, -11.624), vect(57.521, 1.663, -13.342), vect(67.34, 3.716, -5.188), vect(68.84, 6.15, 7.811)]
-
-def Reset():
-    eventPlayer.teleport(StartVector)
-    eventPlayer.startForcingPosition(StartVector)
-    wait()
-    eventPlayer.stopForcingPosition()
-    eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(), Checkpoints[0]), Relativity.TO_WORLD)
-    stopChasingVariable(eventPlayer.Timer)
-    eventPlayer.ReturnCheckpointIndex = 0
-    eventPlayer.CurrentCheckpointVector = Checkpoints[0]
-    eventPlayer.NextCheckpointVector = Checkpoints[1]
-    eventPlayer.Timer = 0
-    eventPlayer.High_Score = []
-    eventPlayer.IsRacing = false
+def ResetSpeed():
     eventPlayer.setMoveSpeed(100)
     eventPlayer.SpeedMultiplier = 100
 
-rule "Start":
-    @Event eachPlayer
-    @Condition eventPlayer.hasSpawned() == true
-    Reset()   
+def GoToResetPoint(): # go to LastCheckpoint
+    eventPlayer.teleport(eventPlayer.LastCheckpoint)
+    eventPlayer.startForcingPosition(eventPlayer.LastCheckpoint)
+    wait()
+    eventPlayer.stopForcingPosition()
+    eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(),  eventPlayer.GoalCheckpoint), Relativity.TO_WORLD)
 
-
-rule "Reset":
+rule "Reset - single cp":
     @Event eachPlayer
-    @Condition eventPlayer.isHoldingButton(Button.RELOAD) == true
-    
+    @Condition eventPlayer.isHoldingButton(Button.RELOAD)     
+    waitUntil(not eventPlayer.isHoldingButton(Button.RELOAD), 0.3)
+    if eventPlayer.isHoldingButton(Button.RELOAD):
+        return
+
+    GoToResetPoint()
+    ResetSpeed()
+
+def FullReset():
+    eventPlayer.LastCheckpoint = StartVector
+    stopChasingVariable(eventPlayer.Timer)
+    eventPlayer.GoalCheckpoint = Checkpoints[0]
+    eventPlayer.AfterNextCheckpoint = Checkpoints[1]
+    eventPlayer.ReturnCheckpointIndex = 0
+    eventPlayer.Timer = 0
+    eventPlayer.High_Score = []
+    eventPlayer.IsRacing = false
+    GoToResetPoint() # LastCheckpoint is first reset so this works
+    ResetSpeed()
+
+rule "Reset - full":
+    @Event eachPlayer
+    @Condition eventPlayer.isHoldingButton(Button.RELOAD) 
     wait(0.5, Wait.ABORT_WHEN_FALSE)
-    Reset()
+    FullReset()
 
-
+rule "handle death and taxes":
+    @Event playerDied
+    eventPlayer.respawn()
+    GoToResetPoint()
+    ResetSpeed()
+    
 rule "Arrive at Checkpoint":
     @Event eachPlayer
-    @Condition distance(eventPlayer.CurrentCheckpointVector, eventPlayer.getEyePosition()) <= 2.65
+    @Condition distance(eventPlayer.GoalCheckpoint, eventPlayer.getEyePosition()) <= RingSize #2.65
     @Condition eventPlayer.isAlive()
     # TODO: Separate starting the level vs arriving at a checkpoint IN the level?
     playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getEyePosition(), 100)
@@ -51,14 +68,13 @@ rule "Arrive at Checkpoint":
     eventPlayer.SpeedMultiplier += 3
 
     eventPlayer.ReturnCheckpointIndex += 1
-    eventPlayer.CurrentCheckpointVector = eventPlayer.NextCheckpointVector
-    eventPlayer.NextCheckpointVector = Checkpoints[eventPlayer.ReturnCheckpointIndex + 1]
-
-
+    eventPlayer.LastCheckpoint = eventPlayer.GoalCheckpoint 
+    eventPlayer.GoalCheckpoint = eventPlayer.AfterNextCheckpoint
+    eventPlayer.AfterNextCheckpoint = Checkpoints[eventPlayer.ReturnCheckpointIndex + 1]
 
 rule "Finish":
     @Event eachPlayer
-    @Condition not eventPlayer.CurrentCheckpointVector
+    @Condition not eventPlayer.GoalCheckpoint
     #@Condition eventPlayer.Timer != 0
     
     eventPlayer.IsRacing = false
@@ -72,4 +88,61 @@ rule "Finish":
     lbl_0:
 
 
+# decrease to make it wait more often if you have load problems, keep at full int numbers no floats
+#!define fence_delay 3
+# projectile size, 30 is maximum possible atm
+#!define fence_proj_size 30
+# gridsize of 16 means a 16x16 grid with the point in the center
+#!define fence_grid 16
+# calculation to find the side of the map
+#!define fence_offset vect((fence_grid * fence_proj_size) / 2, 0, (fence_grid * fence_proj_size) / 2)
+# calculation for next explosion
+#!define fence_position  MapVectorArray[1] - fence_offset + (MapVectorArray[0] % fence_grid) * (Vector.LEFT * fence_proj_size) + floor(MapVectorArray[0] / fence_grid) * (Vector.FORWARD * fence_proj_size)
 
+rule "Addon | Little Destructo - Fence Breaker":
+    # Made by FishoFire version 1.0
+    # wait to overwrite any from copy pastas
+	wait(LoadOrder.destructo)
+    # first entry will act as index, rest is the points themselves
+    MapVectorArray = [0]
+    # flag mode = both flag points, just incase
+    # tdm/dm = first spawn points, the maps are not big so it just covers entire map. all teams defaults to team 1 spawn
+    # push: payload and cp 0 are set but rest isnt. normal payload maps have more then 1 point.
+    # rest of maps have up to 3 points
+    MapVectorArray.append( #$$ Combine with `MapVectorArray = [0]`
+        [getFlagPosition(Team.1), getFlagPosition(Team.2)] if getCurrentGamemode() == Gamemode.CTF else
+        getSpawnPoints(Team.ALL)[0] if getCurrentGamemode() in [Gamemode.TDM, Gamemode.FFA] else
+        getPayloadPosition() if getPayloadPosition()[0] and not (getObjectivePosition(1) + getObjectivePosition(2)) else
+        [getObjectivePosition(0), getObjectivePosition(1), getObjectivePosition(2)])
+    # explode in a grid around the selected points
+    while len(MapVectorArray) > 1:
+        MapVectorArray[0] = 0
+        while MapVectorArray[0] < (fence_grid * fence_grid):
+            createProjectile(
+                Projectile.ORB,  # the only orb available without fx extension
+                null,
+                fence_position,
+                Vector.DOWN, Relativity.TO_WORLD, ModifyHealth.HEAL, Team.1, 0, 0, fence_proj_size,
+                DynamicEffect.GOOD_EXPLOSION, # possible without extensions: bad, good, ring
+                DynamicEffect.EXPLOSION_SOUND, # possible without extensions: explosion sound, buf sound, ring explosion sound
+                1, 1, 0, 0, 0, 0)
+            MapVectorArray[0] ++
+            if not (MapVectorArray[0] % fence_delay): # use modulo to only wait every x orbs keep the 0 change the other number
+                wait(0)
+        del MapVectorArray[1]
+
+    # handle exceptions (looking at you new queen street)
+    MapVectorArray = [vect(8.276, 4.113, 15.261), vect(-8.319, 2.624, 14.245), vect(0.006, 4.821, 18.513)]
+    while len(MapVectorArray):
+        # same as other projectile before
+        createProjectile(
+            Projectile.ORB,
+            null,
+            MapVectorArray[0],
+            Vector.DOWN, Relativity.TO_WORLD, ModifyHealth.HEAL, Team.1, 0, 0, fence_proj_size,
+            DynamicEffect.GOOD_EXPLOSION,
+            DynamicEffect.EXPLOSION_SOUND,
+            1, 1, 0, 0, 0, 0)
+        del MapVectorArray[0]
+        wait(0)
+    MapVectorArray = null

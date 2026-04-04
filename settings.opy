@@ -25,7 +25,7 @@ settings {
         },
         "general": {
             "heroLimit": "off",
-            "respawnTime%": 0,
+            "respawnTime%": 10,
             "spawnHealthPacks": "disabled",
             "enableRandomHeroes": true
         }
@@ -43,3 +43,7 @@ settings {
         }
     }
 }
+
+#!define divider(x) rule "------------------------------------------------------------------------  x ------------------------------------------------------------------------ ":\
+    @Delimiter\
+    @Disabled
