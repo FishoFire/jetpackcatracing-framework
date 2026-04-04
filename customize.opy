@@ -31,11 +31,8 @@ rule "Customize Credits and Colors Here":
     #after next cp
     ColorConfig[Customize.after_next_cp] = Color.WHITE
 
-    #goal icon text
-    GoalText = "<tx0C0000000002A9F5>" #"<tx0C000000000039DA>" 
-    
     #goal icon color
-    ColorConfig[Customize.goal_color] = Color.WHITE
+    ColorConfig[Customize.goal_color] = Color.ROSE
 
 
     
