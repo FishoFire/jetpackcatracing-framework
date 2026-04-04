@@ -36,7 +36,7 @@ rule "Effects Setup":
 
     # checkpoint icon
     createIcon( 
-        localPlayer.filter(lambda _: localPlayer.GoalCheckpoint != 0 and not localPlayer.isInViewAngle(localPlayer.GoalCheckpoint, 40) ), 
+        localPlayer.filter(lambda _: localPlayer.GoalCheckpoint != 0 and not localPlayer.isInViewAngle(localPlayer.GoalCheckpoint, 4) ), 
         localPlayer.GoalCheckpoint + vect(0,1,0), 
         Icon.ARROW_DOWN, 
         IconReeval.VISIBILITY_AND_POSITION, ColorConfig[Customize.goal_color], true
