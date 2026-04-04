@@ -1,7 +1,9 @@
 
 #!optimizeStrict
 #!setupTags
+
 #!define versionhere "0.1.0"
+
 #!include "settings.opy"
 #!include "variables.opy"
 #!include "init.opy"

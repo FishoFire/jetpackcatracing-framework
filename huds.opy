@@ -21,9 +21,11 @@ rule "HUD Setup":
         f"Discord: dsc.gg/jetpack{LeftAlign100}",
         HudPosition.LEFT, -199, ColorConfig[Customize.dsc], HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
 
-    hudSubtext(getAllPlayers(), f"Hold {inputBindingString(Button.RELOAD)} to restart", HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext(localPlayer, f"Time: {localPlayer.Timer}", HudPosition.TOP, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers(), f"Hold {inputBindingString(Button.RELOAD)} to restart", HudPosition.RIGHT, 0, ColorConfig[Customize.control_hud_1] , HudReeval.VISIBILITY_AND_STRING)
+    
+    hudSubtext(localPlayer, f"Time: {localPlayer.Timer}", HudPosition.TOP, 1, ColorConfig[Customize.player_time] , HudReeval.VISIBILITY_AND_STRING)
 
 rule "Checkpoint Effects Setup":
-    createEffect(localPlayer.filter(lambda _: localPlayer.CurrentCheckpointVector != 0), Effect.GOOD_AURA, Color.GREEN, localPlayer.CurrentCheckpointVector, 2.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    createEffect(localPlayer.filter(lambda _: localPlayer.NextCheckpointVector != 0), Effect.GOOD_AURA, Color.WHITE, localPlayer.NextCheckpointVector, 2.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    wait(LoadOrder.hudsGlobal)
+    createEffect(localPlayer.filter(lambda _: localPlayer.CurrentCheckpointVector != 0), Effect.GOOD_AURA, ColorConfig[Customize.last_checkpoint], localPlayer.CurrentCheckpointVector, 2.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(localPlayer.filter(lambda _: localPlayer.NextCheckpointVector != 0), Effect.GOOD_AURA, ColorConfig[Customize.goal_checkpoint], localPlayer.NextCheckpointVector, 2.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
