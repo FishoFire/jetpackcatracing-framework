@@ -20,10 +20,10 @@ rule "Customize Credits and Colors Here":
     #player timer
     ColorConfig[Customize.player_time] = Color.WHITE
 
-    #next goal checkpoint color
-    ColorConfig[Customize.goal_checkpoint] = Color.WHITE
+    #next cp
+    ColorConfig[Customize.goal_checkpoint] = Color.GREEN
 
-    #previously touched checkpoint color
-    ColorConfig[Customize.last_checkpoint] = Color.GREEN
+    #after next cp
+    ColorConfig[Customize.after_next] = Color.WHITE
 
 

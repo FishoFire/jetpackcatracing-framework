@@ -32,8 +32,7 @@ enum Customize:
     control_hud_1,
     player_time,
     goal_checkpoint,
-    last_checkpoint
-
+    after_next,
 
 enum LoadOrder:
     mapData     = -1,
