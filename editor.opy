@@ -8,7 +8,7 @@ rule "Editor | Enable Checkpoint Selection":
     wait(0.5, Wait.ABORT_WHEN_FALSE)
     if not Checkpoints:
         Checkpoints = [vect(10, 10, 10)]
-    eventPlayer.EditorMode = EditorMode.ON if eventPlayer.EditorMode != EditorMode.ON else EditorMode.OFF
+    eventPlayer.EditorMode = EditorMode.MOVE_CHECKPOINT if eventPlayer.EditorMode == EditorMode.OFF else EditorMode.OFF
     if eventPlayer.EditorMode:
         smallMessage(hostPlayer, "   Checkpoint Selection Enabled")
         StartEditorCamera()
@@ -36,11 +36,11 @@ rule "Editor | Select Checkpoint & Mode":
     if eventPlayer.getThrottle().x > 0:
         eventPlayer.EditorMode += 1
         if eventPlayer.EditorMode >= len(EditorMode):
-            eventPlayer.EditorMode = 1
+            eventPlayer.EditorMode = 2
 
     elif eventPlayer.getThrottle().x < 0:
         eventPlayer.EditorMode -= 1
-        if eventPlayer.EditorMode < 1:
+        if eventPlayer.EditorMode < 2:
             eventPlayer.EditorMode = len(EditorMode) - 1
     
     SetCheckpoints()
