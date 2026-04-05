@@ -15,20 +15,29 @@ globalvar GoalText 9
 
 # Player variables
 
-playervar Checkpoints 0
+playervar EditorMode 0
 playervar Timer 1
 playervar High_Score 2
 playervar IsRacing 3
 playervar SpeedMultiplier 4
-playervar ReturnCheckpointIndex 5
+playervar CurrentCheckpointIdx 5
 playervar GoalCheckpoint 6
 playervar AfterNextCheckpoint 7
-playervar LastCheckpoint 8
+playervar CurrentCheckpoint 8
+playervar ActivelyEditing
+playervar EditCheckpointEffect 10
+playervar EditCheckpointTemp 11
 
 # Subroutines
 subroutine FullReset
 subroutine GoToResetPoint # teleport back to lastpoint
 subroutine ResetSpeed
+subroutine StartEditorCamera
+subroutine StartEditorCamera2
+subroutine StopEditorCamera
+subroutine DisableAbilities
+subroutine EnableAbilities
+subroutine SetCheckpoints
 
 #!define LeftAlign100 "                                                                                                    "
 ##!define LeftAlign100 ""
@@ -66,3 +75,21 @@ enum HO: # hud ordering
 
     # hud right ###############
     controls,
+
+enum EditorMode:
+    OFF = 0,
+    ON = 1,
+    MOVE_CHECKPOINT = 2,
+    INSERT_CHECKPOINT = 3,
+    REMOVE_CHECKPOINT = 4,
+
+macro Array.insertAt(index, item):
+    self.append(null)
+    self = [CAE if CAI <= index else self[CAI - 1] for CAE, CAI in self]
+    self[index] = item
+
+macro Player.flyMovementDelta():
+    ((0.096 + 0.192 * self.isHoldingButton(Button.PRIMARY_FIRE) - 0.048 * self.isHoldingButton(Button.SECONDARY_FIRE)) *
+    (self.getFacingDirection() * self.getThrottle().z * (vect(1, not self.isHoldingButton(Button.ABILITY_1), 1)) +
+    worldVector(self.getThrottle() * Vector.LEFT, self, Transform.ROTATION) +
+    Vector.UP * (self.isHoldingButton(Button.JUMP) - self.isHoldingButton(Button.CROUCH))))

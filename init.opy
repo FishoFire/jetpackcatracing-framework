@@ -23,6 +23,7 @@ rule "Init Player":
     eventPlayer.disableGamemodeInWorldUi()
     eventPlayer.disableMessages()
     eventPlayer.disablePlayerCollision()
+    eventPlayer.setAbility1Enabled(false)
     eventPlayer.setStatusEffect(null, Status.INVINCIBLE, 999999)
     chaseAtRate(eventPlayer.Timer, 0, 1, ChaseRateReeval.NONE)
 

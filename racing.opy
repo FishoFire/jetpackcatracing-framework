@@ -9,16 +9,22 @@ rule "anti crash":
     waitUntil(getServerLoad() < 230, Math.INFINITY)
     setSlowMotion(100)
 
+def SetCheckpoints():
+    eventPlayer.CurrentCheckpoint = Checkpoints[eventPlayer.CurrentCheckpointIdx] 
+    eventPlayer.GoalCheckpoint = Checkpoints[eventPlayer.CurrentCheckpointIdx + 1]
+    eventPlayer.AfterNextCheckpoint = Checkpoints[eventPlayer.CurrentCheckpointIdx + 2]
+
 def ResetSpeed():
     eventPlayer.setMoveSpeed(100)
     eventPlayer.SpeedMultiplier = 100
 
-def GoToResetPoint(): # go to LastCheckpoint
-    eventPlayer.teleport(eventPlayer.LastCheckpoint)
-    eventPlayer.startForcingPosition(eventPlayer.LastCheckpoint)
+def GoToResetPoint(): # go to CurrentCheckpoint
+    eventPlayer.teleport(eventPlayer.CurrentCheckpoint)
+    eventPlayer.startForcingPosition(eventPlayer.CurrentCheckpoint)
     wait()
+    if not eventPlayer.EditorMode:
+        eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(),  eventPlayer.GoalCheckpoint), Relativity.TO_WORLD)
     eventPlayer.stopForcingPosition()
-    eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(),  eventPlayer.GoalCheckpoint), Relativity.TO_WORLD)
 
 rule "Reset - single cp":
     @Event eachPlayer
@@ -31,16 +37,19 @@ rule "Reset - single cp":
     ResetSpeed()
 
 def FullReset():
-    eventPlayer.LastCheckpoint = StartVector
     stopChasingVariable(eventPlayer.Timer)
-    eventPlayer.GoalCheckpoint = Checkpoints[0]
-    eventPlayer.AfterNextCheckpoint = Checkpoints[1]
-    eventPlayer.ReturnCheckpointIndex = 0
+    eventPlayer.CurrentCheckpointIdx = 0
+    SetCheckpoints()
     eventPlayer.Timer = 0
     eventPlayer.High_Score = []
     eventPlayer.IsRacing = false
-    GoToResetPoint() # LastCheckpoint is first reset so this works
+    GoToResetPoint() # CurrentCheckpoint is first reset so this works
     ResetSpeed()
+
+    waitUntil(eventPlayer.isMoving() and not eventPlayer.EditorMode, 99999)
+    chaseAtRate(eventPlayer.Timer, Math.INFINITY, 1)
+    eventPlayer.IsRacing = true
+    
 
 rule "Reset - full":
     @Event eachPlayer
@@ -53,28 +62,25 @@ rule "handle death and taxes":
     eventPlayer.respawn()
     GoToResetPoint()
     ResetSpeed()
-    
+
+
 rule "Arrive at Checkpoint":
     @Event eachPlayer
     @Condition distance(eventPlayer.GoalCheckpoint, eventPlayer.getEyePosition()) <= RingSize #2.65
-    @Condition eventPlayer.isAlive()
+    @Condition eventPlayer.isAlive() and eventPlayer.IsRacing
+    @Condition not eventPlayer.EditorMode
     # TODO: Separate starting the level vs arriving at a checkpoint IN the level?
     playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getEyePosition(), 100)
     
-    chaseAtRate(eventPlayer.Timer, 100000000, 1)
-    eventPlayer.IsRacing = true
-
     eventPlayer.setMoveSpeed(eventPlayer.SpeedMultiplier * 2)
     eventPlayer.SpeedMultiplier += 3
 
-    eventPlayer.ReturnCheckpointIndex += 1
-    eventPlayer.LastCheckpoint = eventPlayer.GoalCheckpoint 
-    eventPlayer.GoalCheckpoint = eventPlayer.AfterNextCheckpoint
-    eventPlayer.AfterNextCheckpoint = Checkpoints[eventPlayer.ReturnCheckpointIndex + 1]
+    eventPlayer.CurrentCheckpointIdx += 1
+    SetCheckpoints()
 
 rule "Finish":
     @Event eachPlayer
-    @Condition not eventPlayer.GoalCheckpoint
+    @Condition not eventPlayer.GoalCheckpoint and not eventPlayer.EditorMode
     #@Condition eventPlayer.Timer != 0
     
     eventPlayer.IsRacing = false

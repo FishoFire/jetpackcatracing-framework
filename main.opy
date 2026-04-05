@@ -19,3 +19,4 @@ divider(code)
 #!include "init.opy"
 #!include "huds.opy"
 #!include "racing.opy"
+#!include "editor.opy"
