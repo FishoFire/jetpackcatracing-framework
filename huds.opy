@@ -2,7 +2,7 @@
 
 
 rule "HUD Setup":
-    wait(LoadOrder.hudsGlobal)
+    wait(LoadOrder.HUDS_GLOBAL)
     # hudSubtext(getAllPlayers(), "\n", HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     # hudSubtext(getAllPlayers(), "Hold {0} to restart".format(inputBindingString(Button.RELOAD)), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     # hudSubtext(getAllPlayers(), "Hold {0} to change camera".format(inputBindingString(Button.INTERACT)), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
@@ -15,12 +15,12 @@ rule "HUD Setup":
         heroIcon(Hero.JETPACK_CAT), 
         f"Made By: {CreatorName}{LeftAlign100}",
         f"Map Code: {MapCode}{LeftAlign100}",
-        HudPosition.LEFT, HO.credit, Color.SKY_BLUE, ColorConfig[Customize.credit_code], ColorConfig[Customize.credit_name], 
+        HudPosition.LEFT, HudOrder.CREDIT, Color.SKY_BLUE, ColorConfig[Customize.CREDIT_CODE], ColorConfig[Customize.CREDIT_NAME], 
         HudReeval.VISIBILITY, SpecVisibility.DEFAULT
     )
     hudSubheader(true[0],
         f"Discord: dsc.gg/jetpack{LeftAlign100}",
-        HudPosition.LEFT, HO.disc, ColorConfig[Customize.dsc], HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
+        HudPosition.LEFT, HudOrder.DISC, ColorConfig[Customize.DSC], HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
 
     hudSubtext(getAllPlayers(), 
         "Press {0}: reset\n"
@@ -28,20 +28,20 @@ rule "HUD Setup":
         "".format(
         inputBindingString(Button.RELOAD)
         ), 
-        HudPosition.RIGHT, HO.controls, ColorConfig[Customize.control_hud_1] , HudReeval.VISIBILITY_AND_STRING
+        HudPosition.RIGHT, HudOrder.CONTROLS, ColorConfig[Customize.CONTROL_HUD_1] , HudReeval.VISIBILITY_AND_STRING
     )
     
-    hudSubtext(localPlayer, f"Time: {localPlayer.Timer}", HudPosition.TOP, HO.timer, ColorConfig[Customize.player_time] , HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(localPlayer, f"Time: {localPlayer.Timer}", HudPosition.TOP, HudOrder.TIMER, ColorConfig[Customize.PLAYER_TIME] , HudReeval.VISIBILITY_AND_STRING)
 
-    hudSubtext(localPlayer, "\nSpeed: {}\nMultiplier: x{}{}".format(localPlayer.getSpeed(), localPlayer.SpeedMultiplier/100,LeftAlign100), HudPosition.LEFT, HO.spd, ColorConfig[Customize.spd_color], HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(localPlayer, "\nSpeed: {}\nMultiplier: x{}{}".format(localPlayer.getSpeed(), localPlayer.SpeedMultiplier/100,LeftAlign100), HudPosition.LEFT, HudOrder.SPD, ColorConfig[Customize.SPD_COLOR], HudReeval.VISIBILITY_AND_STRING)
     
     # checkpoint icon as text
-    #createInWorldText(localPlayer.filter(lambda _: localPlayer.GoalCheckpoint != 0), GoalText, localPlayer.GoalCheckpoint, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION,  ColorConfig[Customize.goal_color] , SpecVisibility.DEFAULT)
+    #createInWorldText(localPlayer.filter(lambda _: localPlayer.GoalCheckpoint != 0), GoalText, localPlayer.GoalCheckpoint, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION,  ColorConfig[Customize.GOAL_COLOR] , SpecVisibility.DEFAULT)
 
 rule "Effects Setup":
-    wait(LoadOrder.effects)
-    createEffect(localPlayer.filter(lambda _: localPlayer.GoalCheckpoint != 0), Effect.GOOD_AURA, ColorConfig[Customize.goal_cp], localPlayer.GoalCheckpoint, RingSize-0.15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    createEffect(localPlayer.filter(lambda _: localPlayer.AfterNextCheckpoint != 0), Effect.GOOD_AURA, ColorConfig[Customize.after_next_cp], localPlayer.AfterNextCheckpoint, RingSize-0.15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    wait(LoadOrder.EFFECTS)
+    createEffect(localPlayer.filter(lambda _: localPlayer.GoalCheckpoint != 0), Effect.GOOD_AURA, ColorConfig[Customize.GOAL_CP], localPlayer.GoalCheckpoint, RingSize-0.15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(localPlayer.filter(lambda _: localPlayer.AfterNextCheckpoint != 0), Effect.GOOD_AURA, ColorConfig[Customize.AFTER_NEXT_CP], localPlayer.AfterNextCheckpoint, RingSize-0.15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     createEffect(localPlayer.filter(lambda _: Checkpoints[localPlayer.CurrentCheckpointIdx] != 0 and localPlayer.EditorMode > EditorMode.OFF), Effect.GOOD_AURA, Color.RED, Checkpoints[localPlayer.CurrentCheckpointIdx], RingSize-0.15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
 
     # checkpoint icon
@@ -49,7 +49,7 @@ rule "Effects Setup":
         localPlayer.filter(lambda _: localPlayer.EditorMode == 0 and localPlayer.GoalCheckpoint != 0 and not localPlayer.isInViewAngle(localPlayer.GoalCheckpoint, 4) ), 
         localPlayer.GoalCheckpoint + vect(0,1,0), 
         Icon.ARROW_DOWN, 
-        IconReeval.VISIBILITY_AND_POSITION, ColorConfig[Customize.goal_color], true
+        IconReeval.VISIBILITY_AND_POSITION, ColorConfig[Customize.GOAL_COLOR], true
     )
     
 rule "Editor HUD":
@@ -113,7 +113,7 @@ rule "Editor HUD":
 
     hudSubtext(getAllPlayers(), 
         f"Hold {inputBindingString(Button.INTERACT)}: To Enable Editor Mode\n",
-        HudPosition.RIGHT, HO.controls + 10, ColorConfig[Customize.control_hud_1] , HudReeval.VISIBILITY_AND_STRING
+        HudPosition.RIGHT, HudOrder.CONTROLS + 10, ColorConfig[Customize.CONTROL_HUD_1] , HudReeval.VISIBILITY_AND_STRING
     )
 
     

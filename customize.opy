@@ -1,7 +1,7 @@
 #!mainFile "main.opy"
 
 rule "Customize Credits and Colors Here":
-    wait(LoadOrder.customize)
+    wait(LoadOrder.CUSTOMIZE)
 
     # credits
     CreatorName = "creator name here"
@@ -11,29 +11,29 @@ rule "Customize Credits and Colors Here":
     RingSize = 2.5
 
     #credit hud name   -   作者HUD
-    ColorConfig[Customize.credit_name] = Color.VIOLET
+    ColorConfig[Customize.CREDIT_NAME] = Color.VIOLET
 
     #credit hud code   -   代码HUD
-    ColorConfig[Customize.credit_code] = Color.SKY_BLUE
+    ColorConfig[Customize.CREDIT_CODE] = Color.SKY_BLUE
 
     #discord link
-    ColorConfig[Customize.dsc] = Color.AQUA
+    ColorConfig[Customize.DSC] = Color.AQUA
 
     #control scheme
-    ColorConfig[Customize.control_hud_1] = Color.WHITE
+    ColorConfig[Customize.CONTROL_HUD_1] = Color.WHITE
 
     #player timer
-    ColorConfig[Customize.player_time] = Color.WHITE
+    ColorConfig[Customize.PLAYER_TIME] = Color.WHITE
 
     #next cp
-    ColorConfig[Customize.goal_cp] = Color.GREEN
+    ColorConfig[Customize.GOAL_CP] = Color.GREEN
 
     #after next cp
-    ColorConfig[Customize.after_next_cp] = Color.WHITE
+    ColorConfig[Customize.AFTER_NEXT_CP] = Color.WHITE
 
     #goal icon color
-    ColorConfig[Customize.goal_color] = Color.ROSE
+    ColorConfig[Customize.GOAL_COLOR] = Color.ROSE
 
     #speed meter color
-    ColorConfig[Customize.spd_color] = Color.WHITE
+    ColorConfig[Customize.SPD_COLOR] = Color.WHITE
     

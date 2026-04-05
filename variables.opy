@@ -44,38 +44,38 @@ subroutine SetCheckpoints
 ##!define LeftAlign100 ""
 
 enum Customize: 
-    credit_name,
-    credit_code,
-    dsc,
-    control_hud_1,
-    player_time,
-    after_next_cp,
-    goal_cp,
-    goal_color,
-    spd_color,
+    CREDIT_NAME,
+    CREDIT_CODE,
+    DSC,
+    CONTROL_HUD_1,
+    PLAYER_TIME,
+    AFTER_NEXT_CP,
+    GOAL_CP,
+    GOAL_COLOR,
+    SPD_COLOR,
 
 enum LoadOrder:
-    mapData     = -1,
-    customize   = 0,
-    destructo   = 0.016 * 2,
-    #setup       = 0.016 * 32,
-    #addon       = 0.016 * 40,
-    hudsGlobal  = 0.016 * 48,
-    #hudsPlayer  = 0.016 * 56,
-    #hudsEditor  = 0.016 * 64,
-    effects     = 0.016 * 256,
+    MAP_DATA     = -1,
+    CUSTOMIZE   = 0,
+    DESTRUCTO   = 0.016 * 2,
+    #SETUP       = 0.016 * 32,
+    #ADDON       = 0.016 * 40,
+    HUDS_GLOBAL  = 0.016 * 48,
+    #HUDS_PLAYER  = 0.016 * 56,
+    #HUDS_EDITOR  = 0.016 * 64,
+    EFFECTS     = 0.016 * 256,
 
-enum HO: # hud ordering
+enum HudOrder: # hud ordering
     # hud middle ###############
-    timer,
+    TIMER,
 
     # hud left ###############
-    credit,
-    disc,
-    spd,
+    CREDIT,
+    DISC,
+    SPD,
 
     # hud right ###############
-    controls,
+    CONTROLS,
 
 enum EditorMode:
     OFF = 0,

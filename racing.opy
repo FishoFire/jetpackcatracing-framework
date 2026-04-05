@@ -108,7 +108,7 @@ rule "Finish":
 rule "Addon | Little Destructo - Fence Breaker":
     # Made by FishoFire version 1.0
     # wait to overwrite any from copy pastas
-	wait(LoadOrder.destructo)
+	wait(LoadOrder.DESTRUCTO)
     # first entry will act as index, rest is the points themselves
     MapVectorArray = [0]
     # flag mode = both flag points, just incase
