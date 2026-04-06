@@ -73,6 +73,8 @@ rule "test huds":
 #!define other_action false
 #!define action_delay 0.4
 
+# This define puts the time between each bots action, perfectly spacing their actions out
+# delay_per_bot(0.5) means that first bot will wait 0, second bot will wait 0.5, third bot will wait 1 seconds etc
 #!define delay_per_bot(x) wait( ((TestBotArray.index(eventPlayer)) * x ) )
 
 rule "bots: create test bots":
@@ -119,6 +121,6 @@ rule "bots: custom action routine":
     @Condition bots_on
     @Condition eventPlayer in TestBotArray
 
-    delay_per_bot(0.5) # time space between each bot acting, to stagger them
+    delay_per_bot(0.5) # time space between each bot acting, to stagger the actions
 
     eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
