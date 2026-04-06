@@ -7,8 +7,11 @@ rule "Init Global":
     disableAnnouncer()
     disableGamemodeCompletion()
     disableScoring()
-    
+
     wait(1)
+    LeaderboardText = null
+    LeaderboardEntries = []
+    LeaderBoardRemake = false
     setMatchTime(900)
 
     # setup variables
@@ -16,12 +19,12 @@ rule "Init Global":
     
 
     # Checkpoints = []
-    # Lobby_High = []
+  
 
 
 rule "Init Player":
     @Event playerJoined
-    @Condition eventPlayer.isDummy() == false or eventPlayer in testAI
+    @Condition eventPlayer.isDummy() == false or eventPlayer in TestBotArray
     eventPlayer.disableKillFeed()
     eventPlayer.disableGamemodeHud()
     eventPlayer.disableGamemodeInWorldUi()
@@ -30,6 +33,6 @@ rule "Init Player":
     eventPlayer.setAbility1Enabled(false)
     eventPlayer.setStatusEffect(null, Status.INVINCIBLE, 999999)
     chaseAtRate(eventPlayer.Timer, 0, 1, ChaseRateReeval.NONE)
-
+    eventPlayer.High_Score = null
     waitUntil(getTotalTimeElapsed() > 1, 1) # map variables need to load first
     FullReset()

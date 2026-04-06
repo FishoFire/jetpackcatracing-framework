@@ -6,8 +6,6 @@ rule "HUD Setup":
     # hudSubtext(getAllPlayers(), "\n", HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     # hudSubtext(getAllPlayers(), "Hold {0} to restart".format(inputBindingString(Button.RELOAD)), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     # hudSubtext(getAllPlayers(), "Hold {0} to change camera".format(inputBindingString(Button.INTERACT)), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-    # hudHeader(getAllPlayers(), "Lobby Best: {0} by {1}".format(sorted(Lobby_High)[0], Lobby_Best), HudPosition.TOP, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-    # hudHeader(getAllPlayers(), "Lobby Best: {0}{1}{2}".format(sorted(Lobby_High)[0] if Lobby_Best != 0 else "0", " by " if Lobby_Best != 0 else "", Lobby_Best if Lobby_Best != 0 else ""), HudPosition.TOP, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
 
 
     hudText(
@@ -38,6 +36,9 @@ rule "HUD Setup":
     # checkpoint icon as text
     #createInWorldText(localPlayer.filter(lambda _: localPlayer.GoalCheckpoint != 0), GoalText, localPlayer.GoalCheckpoint, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION,  ColorConfig[Customize.GOAL_COLOR] , SpecVisibility.DEFAULT)
 
+    hudSubheader(localPlayer if localPlayer.High_Score else null, "{} Personal best: {}".format(abilityIconString(Hero.JETPACK_CAT, Button.ABILITY_2) ,localPlayer.High_Score), HudPosition.RIGHT, HudOrder.PERSONAL_BEST, ColorConfig[Customize.PERSONAL_BEST], HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)
+
+
 rule "Effects Setup":
     wait(LoadOrder.EFFECTS)
     createEffect(localPlayer.filter(lambda _: localPlayer.GoalCheckpoint != 0), Effect.GOOD_AURA, ColorConfig[Customize.GOAL_CP], localPlayer.GoalCheckpoint, RingSize-0.15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
@@ -51,7 +52,41 @@ rule "Effects Setup":
         Icon.ARROW_DOWN, 
         IconReeval.VISIBILITY_AND_POSITION, ColorConfig[Customize.GOAL_COLOR], true
     )
+
+rule "remake leaderboard hud":
+    @Condition LeaderBoardRemake
+    LeaderboardEntries = sorted(LeaderboardEntries, lambda i: i[1])
+
+    while len(LeaderboardText) > 0: # delete previous board (because re-val is off)
+        destroyHudText(LeaderboardText[0])
+        del LeaderboardText[0]
     
+    if len(LeaderboardEntries) < 1:
+        LeaderBoardRemake = false
+        return
+
+    if LeaderboardEntries[0]:
+            hudSubtext(getAllPlayers(),
+                "{0} Top 5 {0}".format(abilityIconString(Hero.JETPACK_CAT,Button.SECONDARY_FIRE))
+                , HudPosition.RIGHT, HudOrder.TOP5, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT
+            )
+            LeaderboardText.append(getLastCreatedText())
+            hudText(getAllPlayers(), heroIcon(Hero.JETPACK_CAT), LeaderboardEntries[0][0], LeaderboardEntries[0][1], HudPosition.RIGHT, HudOrder.TOP5+1, Color.RED, Color.RED, Color.RED, HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
+            LeaderboardText.append(getLastCreatedText())
+        if LeaderboardEntries[1]:
+            hudText(getAllPlayers(), heroIcon(Hero.JETPACK_CAT), LeaderboardEntries[1][0], LeaderboardEntries[1][1], HudPosition.RIGHT, HudOrder.TOP5+2, Color.ORANGE, Color.ORANGE, Color.ORANGE, HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
+            LeaderboardText.append(getLastCreatedText())
+        if LeaderboardEntries[2]:
+            hudText(getAllPlayers(), heroIcon(Hero.JETPACK_CAT), LeaderboardEntries[2][0], LeaderboardEntries[2][1], HudPosition.RIGHT, HudOrder.TOP5+3, Color.YELLOW, Color.YELLOW, Color.YELLOW, HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
+            LeaderboardText.append(getLastCreatedText())
+        if LeaderboardEntries[3]:
+            hudText(getAllPlayers(), heroIcon(Hero.JETPACK_CAT), LeaderboardEntries[3][0], LeaderboardEntries[3][1], HudPosition.RIGHT, HudOrder.TOP5+4, Color.LIME_GREEN, Color.LIME_GREEN,Color.LIME_GREEN, HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
+            LeaderboardText.append(getLastCreatedText())
+        if LeaderboardEntries[4]:
+            hudText(getAllPlayers(), heroIcon(Hero.JETPACK_CAT), LeaderboardEntries[4][0], LeaderboardEntries[4][1], HudPosition.RIGHT, HudOrder.TOP5+5, Color.GREEN, Color.GREEN, Color.GREEN,HudReeval.VISIBILITY, SpecVisibility.DEFAULT)
+            LeaderboardText.append(getLastCreatedText())
+
+
 rule "Editor HUD":
     @Condition wsEditorMode
     

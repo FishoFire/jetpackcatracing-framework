@@ -6,6 +6,14 @@ rule "slowmo":
     @Disabled # enable slowmotion here
     setSlowMotion(100)
 
+rule "go to last cp - cheat":
+    @Disabled
+    @Event eachPlayer
+    @Condition eventPlayer.isHoldingButton(Button.ULTIMATE)
+    wait(0.2, Wait.ABORT_WHEN_FALSE)
+    eventPlayer.CurrentCheckpointIdx = len(Checkpoints) - 2
+    SetCheckpoints()
+    GoToResetPoint()
 
 rule "test huds":
     wait(1)
@@ -52,7 +60,7 @@ rule "test huds":
 
 
 # turns bots on/off completly
-#!define bots_on true
+#!define bots_on false
 
 #!define testbot_number 11
 #!define test_team Team.2
@@ -65,25 +73,25 @@ rule "test huds":
 #!define other_action false
 #!define action_delay 0.4
 
-#!define delay_per_bot(x) wait( ((testAI.index(eventPlayer)) * x ) )
+#!define delay_per_bot(x) wait( ((TestBotArray.index(eventPlayer)) * x ) )
 
 rule "bots: create test bots":
     @Condition bots_on
-    testAI = []
-    while len(testAI) < testbot_number:
+    TestBotArray = []
+    while len(TestBotArray) < testbot_number:
         createDummy(Hero.JETPACK_CAT, test_team, -1, null, null)
-        testAI.append(getLastCreatedEntity())
+        TestBotArray.append(getLastCreatedEntity())
         wait(0.1)
-        testAI[len(testAI)-1].startForcingName("test bot {0}".format(len(testAI)-1))
+        TestBotArray[len(TestBotArray)-1].startForcingName("test bot {0}".format(len(TestBotArray)-1))
 
 
 rule "bots: leaderboard test routine":
     @Event eachPlayer
-    @Condition getTotalTimeElapsed() > 5 
+    @Condition getTotalTimeElapsed() > 5
     @Condition other_action == false
     @Condition leaderboard_test
     @Condition bots_on
-    @Condition eventPlayer in testAI
+    @Condition eventPlayer in TestBotArray
 
     # crouch to trigger start timer etc
     eventPlayer.startForcingButton(Button.CROUCH)
@@ -109,7 +117,7 @@ rule "bots: custom action routine":
     @Condition other_action 
     @Condition leaderboard_test == false
     @Condition bots_on
-    @Condition eventPlayer in testAI
+    @Condition eventPlayer in TestBotArray
 
     delay_per_bot(0.5) # time space between each bot acting, to stagger them
 

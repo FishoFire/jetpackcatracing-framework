@@ -9,7 +9,7 @@
 #!define inspector_on true
 
 # testscripts disable: ##, enable: #
-#!define test_script ##
+#!define test_script #
 
 
 # includes ###################
