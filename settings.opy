@@ -1,7 +1,6 @@
 #!mainFile "main.opy"
 #!extension playMoreEffects
 #!extension explosionSounds
-
 settings {
     "main": {
         "description": "Jetpack Cat Racing Overhaul.\nAdapted by nebula, original credit to Jashaal and Roeesun.",

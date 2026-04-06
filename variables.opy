@@ -41,6 +41,7 @@ subroutine EnableAbilities
 subroutine SetCheckpoints
 
 #!define LeftAlign100 "                                                                                                    "
+##!define LeftAlign100 ""
 
 enum Customize: 
     CREDIT_NAME,
