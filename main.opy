@@ -2,14 +2,17 @@
 #!optimizeStrict
 ##!setupTags
 
+# settings ###################
 #!define editor_on false
 #!define inspector_on true
 
 #!define versionhere "0.1.0"
 
+
+
+# includes ###################
 #!include "settings.opy"
 #!include "variables.opy"
-
 
 divider(customization)
 #!include "customize.opy"
