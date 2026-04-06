@@ -51,27 +51,19 @@ rule "test huds":
 
 
 
-
+# turns bots on
 #!define bots_on true
 
-#!define leaderboard_test true
-#!define other_action false
 #!define testbot_number 11
 #!define test_team Team.2
+
+# test leaderboard
+#!define leaderboard_test true
+#!define leaderboard_delay 0.5
+
+# test other set actions
+#!define other_action false
 #!define action_delay 0.4
-
-#in "Init Player" set the bot as valid if he is in test bot var
-
-rule "jumpcp":
-    @Event eachPlayer
-    @Condition eventPlayer.isHoldingButton(Button.ULTIMATE)
-    
-    eventPlayer.CurrentCheckpointIdx = len(Checkpoints) - 2
-    SetCheckpoints()
-     eventPlayer.teleport(eventPlayer.GoalCheckpoint + Vector.UP  + Vector.UP * RingSize)
-    eventPlayer.startForcingButton(Button.CROUCH)
-    waitUntil(not eventPlayer.IsRacing, 5)
-    eventPlayer.stopForcingButton(Button.CROUCH)
 
 
 rule "create test bots":
@@ -91,13 +83,15 @@ rule "leaderboard test":
     @Condition other_action == false
     @Condition eventPlayer in testAI
 
-    wait(1)
-    #FullReset()
+    # crouch to trigger start timer etc
     eventPlayer.startForcingButton(Button.CROUCH)
     wait(0.1)
     eventPlayer.stopForcingButton(Button.CROUCH)
-    wait( ((testAI.index(eventPlayer)) * 0.5 ) )
 
+    # delay between each bot to variate leaderboard
+    wait( ((testAI.index(eventPlayer)) * leaderboard_delay ) )
+
+    # set bot to last point, teleport them and force em down into it
     eventPlayer.CurrentCheckpointIdx = len(Checkpoints) - 2
     SetCheckpoints()
     eventPlayer.teleport(eventPlayer.GoalCheckpoint + Vector.UP  + Vector.UP * RingSize)
@@ -105,3 +99,5 @@ rule "leaderboard test":
     eventPlayer.startForcingButton(Button.CROUCH)
     waitUntil(not eventPlayer.IsRacing, 5)
     eventPlayer.stopForcingButton(Button.CROUCH)
+
+
