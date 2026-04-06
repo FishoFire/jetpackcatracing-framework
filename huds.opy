@@ -29,7 +29,15 @@ rule "HUD Setup":
         HudPosition.RIGHT, HudOrder.CONTROLS, ColorConfig[Customize.CONTROL_HUD_1] , HudReeval.VISIBILITY_AND_STRING
     )
     
-    hudSubtext(localPlayer, f"Time: {localPlayer.Timer}", HudPosition.TOP, HudOrder.TIMER, ColorConfig[Customize.PLAYER_TIME] , HudReeval.VISIBILITY_AND_STRING)
+    hudText(
+        localPlayer, 
+        iconString(Icon.ARROW_RIGHT) if localPlayer.IsRacing else iconString(Icon.FLAG) if localPlayer.CurrentCheckpointIdx == 0 else  iconString(Icon.CHECKMARK) , 
+        "{} / {}".format(localPlayer.CurrentCheckpointIdx,len(Checkpoints)-1), 
+        "Time: {}".format(localPlayer.Timer), 
+        HudPosition.TOP, HudOrder.TIMER,
+        ColorConfig[Customize.PLAYER_TIME], ColorConfig[Customize.PLAYER_TIME], ColorConfig[Customize.PLAYER_TIME], 
+        HudReeval.VISIBILITY_AND_STRING, SpecVisibility.DEFAULT
+    )
 
     hudSubtext(localPlayer, "\nSpeed: {}\nMultiplier: x{}{}".format(localPlayer.getSpeed(), localPlayer.SpeedMultiplier/100,LeftAlign100), HudPosition.LEFT, HudOrder.SPD, ColorConfig[Customize.SPD_COLOR], HudReeval.VISIBILITY_AND_STRING)
     
