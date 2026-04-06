@@ -2,15 +2,19 @@
 
 
 rule "Init Global":
-    # disableInspector()
+    if not inspector_on:
+        disableInspector()
     disableAnnouncer()
     disableGamemodeCompletion()
     disableScoring()
     
     wait(1)
     setMatchTime(900)
-    #setObjectiveDescription(getAllPlayers(), "{0} {1}".format(heroIcon(Hero.JETPACK_CAT), "Jetpack Cat Racing!"), HudReeval.VISIBILITY_AND_STRING)
+
+    # setup variables
+    wsEditorMode = createWorkshopSettingBool("Editor", "Editor Mode Enabled", editor_on, 0)
     
+
     # Checkpoints = []
     # Lobby_High = []
 
@@ -29,6 +33,3 @@ rule "Init Player":
 
     waitUntil(getTotalTimeElapsed() > 1, 1) # map variables need to load first
     FullReset()
-
-rule "Init Editor":
-    wsEditorMode = createWorkshopSettingBool("Editor", "Editor Mode Enabled", false, 0)
