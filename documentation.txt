@@ -1,0 +1,29 @@
+enabling inspector or editor by default on startup
+    In the main.opy file you will find some basic configurations.
+    Set the editor or inspector _on values to true
+
+
+top 5 and leaderboard construction
+    To prevent boards from disapearing on player leave, we use a construction to globalize the actions.
+    The player sub "LeaderboardUpdate" will set a global variable to true and then false
+    A global rule updates the board when that variable is true and create the board
+    
+
+enabling test scripts:
+    In the main.opy file you will find some configurations.
+    #!define test_script #
+    set the test script to be # instead of ##
+    the second # comments the include out
+    After making it a single #, the test_script section is included
+
+bots
+    scroll down in test script to find the bot defines
+    make sure the bots are in the right team
+
+    bots_on turns on/off all bot rules
+    the leaderboard and other actions are made exclusive because they use the same bots
+    you can enable these by adding true to the define values
+    this will simply set their condition true and thus add the rule
+    custom aciton routine is meant for you to trow in any action you want the bots to take
+    delay_per_bot is a define that you can use in any of the action script to space bots action out
+

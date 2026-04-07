@@ -4,8 +4,8 @@
 
 globalvar StartVector 0
 globalvar Checkpoints 1
-globalvar Lobby_High 2
-globalvar Lobby_Best 3
+#globalvar Lobby_High 2 # old system
+#globalvar Lobby_Best 3 # old system
 globalvar CreatorName 4
 globalvar MapCode 5
 globalvar ColorConfig 6
@@ -14,11 +14,17 @@ globalvar RingSize 8
 globalvar GoalText 9
 globalvar wsEditorMode 10
 
+globalvar TestBotArray 
+
+globalvar LeaderboardText # txt entities
+globalvar LeaderboardEntries # # [ [name, time] ]
+globalvar LeaderBoardRemake # trigger remake leaderboard
+
 # Player variables
 
 playervar EditorMode 0
 playervar Timer 1
-playervar High_Score 2
+playervar High_Score 2 # personal best
 playervar IsRacing 3
 playervar SpeedMultiplier 4
 playervar CurrentCheckpointIdx 5
@@ -39,11 +45,12 @@ subroutine StopEditorCamera
 subroutine DisableAbilities
 subroutine EnableAbilities
 subroutine SetCheckpoints
+subroutine LeaderboardUpdate
 
 #!define LeftAlign100 "                                                                                                    "
 ##!define LeftAlign100 ""
 
-enum Customize: 
+enum Customize: # index in the customize array for colors and such
     CREDIT_NAME,
     CREDIT_CODE,
     DSC,
@@ -53,6 +60,7 @@ enum Customize:
     GOAL_CP,
     GOAL_COLOR,
     SPD_COLOR,
+    PERSONAL_BEST,
 
 enum LoadOrder:
     MAP_DATA     = -1,
@@ -65,17 +73,27 @@ enum LoadOrder:
     #HUDS_EDITOR  = 0.016 * 64,
     EFFECTS     = 0.016 * 256,
 
+# _END are general purpose last order huds for their side
 enum HudOrder: # hud ordering
     # hud middle ###############
     TIMER,
 
+    MIDLE_END, 
     # hud left ###############
     CREDIT,
     DISC,
     SPD,
+    TEST_POSITION,
+    TEST_LOAD,
+
+    LEFT_END,
 
     # hud right ###############
     CONTROLS,
+    PERSONAL_BEST,
+    TOP5,
+
+    RIGHT_END,
 
 enum EditorMode:
     OFF = 0,

@@ -108,18 +108,24 @@ rule "Editor | Insert Checkpoint (After Current Checkpoint)":
     eventPlayer.EditCheckpointEffect = getLastCreatedEntity()
 
 
+#!define cam_distance 8
+# calcultes distance between cam and wall and subtracts 1 to make sure you are not inside the wall
+# if nothing is hit then it just returns max length
+# parameter is the start position
+#!define cam_dist_calc(start) (distance(start, raycast(start, start + eventPlayer.getFacingDirection() * - cam_distance,null,null,false).getHitPosition()) - 1)
+
 def StartEditorCamera():
     @Name "Editor | Start Editor 3rd Person Camera"
     
     eventPlayer.setInvisibility(Invis.ALL)
     DisableAbilities()
+
     eventPlayer.startCamera(
-        eventPlayer.CurrentCheckpoint + (
-            updateEveryFrame(eventPlayer.getFacingDirection()) * -6
-        ), 
+        eventPlayer.CurrentCheckpoint + updateEveryFrame(eventPlayer.getFacingDirection() * - cam_dist_calc(eventPlayer.CurrentCheckpoint) ),
         eventPlayer.CurrentCheckpoint, 
         500
     )
+    
 
 def StartEditorCamera2():
     @Name "Editor | Start Editor 3rd Person Camera | Checkpoint Movement"

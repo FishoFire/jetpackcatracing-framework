@@ -41,7 +41,6 @@ def FullReset():
     eventPlayer.CurrentCheckpointIdx = 0
     SetCheckpoints()
     eventPlayer.Timer = 0
-    eventPlayer.High_Score = []
     eventPlayer.IsRacing = false
     GoToResetPoint() # CurrentCheckpoint is first reset so this works
     ResetSpeed()
@@ -85,15 +84,51 @@ rule "Finish":
     
     eventPlayer.IsRacing = false
     stopChasingVariable(eventPlayer.Timer)
-    bigMessage(eventPlayer, "Time: {0} {1}".format(eventPlayer.Timer, "(New Personal Best!)" if sorted(eventPlayer.High_Score)[0] == eventPlayer.Timer else ""))
-    eventPlayer.High_Score.append(eventPlayer.Timer)
-    if eventPlayer.Timer == 0:
-        goto lbl_0
-    Lobby_High.append(eventPlayer.Timer)
-    Lobby_Best = eventPlayer if sorted(Lobby_High)[0] == sorted(eventPlayer.High_Score)[0] else Lobby_Best
-    lbl_0:
+
+    # new top 5 if faster or entry doesnt exist yet    
+    if (
+        LeaderboardEntries[0][1] > eventPlayer.Timer or not LeaderboardEntries[0] or
+        LeaderboardEntries[1][1] > eventPlayer.Timer or not LeaderboardEntries[1] or
+        LeaderboardEntries[2][1] > eventPlayer.Timer or not LeaderboardEntries[2] or
+        LeaderboardEntries[3][1] > eventPlayer.Timer or not LeaderboardEntries[3] or
+        LeaderboardEntries[4][1] > eventPlayer.Timer or not LeaderboardEntries[4]
+    ):
+        bigMessage(getAllPlayers(), "New top 5 time: {} by {}!".format(eventPlayer.Timer, eventPlayer))
+
+    
+    if "{0}".format(eventPlayer) in [i[0] for i in LeaderboardEntries]: # you already have a time
+        if eventPlayer.Timer > [i for i in LeaderboardEntries if i[0] == "{0}".format(eventPlayer)][0][1]: # new time worse
+            bigMessage(eventPlayer, "Completion time: {}".format(eventPlayer.Timer))
+            goto lbl_a
+        else: # new time better
+            bigMessage(eventPlayer, "New personal best: {}".format(eventPlayer.Timer))
+            LeaderboardEntries.remove( [i for i in LeaderboardEntries if i[0] == "{0}".format(eventPlayer)])
+            LeaderboardEntries.append( [["{0}".format(eventPlayer),eventPlayer.Timer]] )
+            eventPlayer.High_Score = eventPlayer.Timer
+            LeaderboardUpdate()
+    else: # you are not in list yet
+        eventPlayer.High_Score = eventPlayer.Timer
+            bigMessage(eventPlayer, "Completion time: {}".format(eventPlayer.Timer))
+        if len(LeaderboardEntries) < 20: # board has room for more
+            LeaderboardEntries.append( [["{0}".format(eventPlayer),eventPlayer.Timer] ])
+            LeaderboardUpdate()
+        else: # 20 entries already
+            if LeaderboardEntries[19][1] < eventPlayer.Timer:  # your time lower then last entry
+                goto lbl_a
+            else: # you beat the last entry, thus replacing it
+                del LeaderboardEntries[19]
+                LeaderboardEntries.append( [["{0}".format(eventPlayer),eventPlayer.Timer]] )
+                LeaderboardUpdate()
+    lbl_a:
+
+def LeaderboardUpdate():
+    # this sub just enabled the global board rule. you cant triger that sub directly from player becaues it would delete huds if player left.
+    LeaderBoardRemake = true
+    wait(0.1)
+    LeaderBoardRemake = false # set false again to prevent board locking
 
 
+ 
 # decrease to make it wait more often if you have load problems, keep at full int numbers no floats
 #!define fence_delay 3
 # projectile size, 30 is maximum possible atm

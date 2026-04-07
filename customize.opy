@@ -25,6 +25,9 @@ rule "Customize Credits and Colors Here":
     #player timer
     ColorConfig[Customize.PLAYER_TIME] = Color.WHITE
 
+    #personal best time
+    ColorConfig[Customize.PERSONAL_BEST] = Color.WHITE
+
     #next cp
     ColorConfig[Customize.GOAL_CP] = Color.GREEN
 
