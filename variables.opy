@@ -1,39 +1,42 @@
 #!mainFile "main.opy"
 
 # Global variables
+# Map Data
+globalvar Checkpoints 0
+globalvar RingSize 10
 
-globalvar StartVector 0
-globalvar Checkpoints 1
-#globalvar Lobby_High 2 # old system
-#globalvar Lobby_Best 3 # old system
-globalvar CreatorName 4
-globalvar MapCode 5
-globalvar ColorConfig 6
-globalvar MapVectorArray 7 # for fence breaker
-globalvar RingSize 8
-globalvar GoalText 9
-globalvar wsEditorMode 10
+# Customization
+globalvar CreatorName 20
+globalvar MapCode 21
+globalvar ColorConfig 22
+globalvar GoalText 23
 
-globalvar TestBotArray 
+# Workshop Settings
+globalvar wsEditorMode 50
 
-globalvar LeaderboardText # txt entities
-globalvar LeaderboardEntries # # [ [name, time] ]
-globalvar LeaderBoardRemake # trigger remake leaderboard
+# HUD Related
+globalvar LeaderboardText 60 # txt entities
+globalvar LeaderboardEntries 61 # # [ [name, time] ]
+globalvar LeaderboardRemake 62 # trigger remake leaderboard
+
+# Plugins
+globalvar MapVectorArray 127 # Little Destructo | Fence breaker
+globalvar TestBotArray 126
 
 # Player variables
 
-playervar EditorMode 0
-playervar Timer 1
-playervar High_Score 2 # personal best
-playervar IsRacing 3
-playervar SpeedMultiplier 4
-playervar CurrentCheckpointIdx 5
-playervar GoalCheckpoint 6
-playervar AfterNextCheckpoint 7
-playervar CurrentCheckpoint 8
+playervar EditorMode
+playervar Timer
+playervar PersonalBest
+playervar IsRacing
+playervar SpeedMultiplier
+playervar CurrentCheckpointIdx
+playervar GoalCheckpoint
+playervar AfterNextCheckpoint
+playervar CurrentCheckpoint
 playervar ActivelyEditing
-playervar EditCheckpointEffect 10
-playervar EditCheckpointTemp 11
+playervar EditCheckpointEffect
+playervar EditCheckpointTemp
 
 # Subroutines
 subroutine FullReset
@@ -66,7 +69,7 @@ enum LoadOrder:
     MAP_DATA     = -1,
     CUSTOMIZE   = 0,
     DESTRUCTO   = 0.016 * 2,
-    #SETUP       = 0.016 * 32,
+    SETUP       = 0.016 * 32,
     #ADDON       = 0.016 * 40,
     HUDS_GLOBAL  = 0.016 * 48,
     #HUDS_PLAYER  = 0.016 * 56,

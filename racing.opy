@@ -1,6 +1,6 @@
 #!mainFile "main.opy"
 
-rule "anti crash":
+rule "Anti Crash":
 	@Event global
 	@Condition getServerLoad() > 250
     wait(1, Wait.ABORT_WHEN_FALSE)
@@ -26,7 +26,7 @@ def GoToResetPoint(): # go to CurrentCheckpoint
         eventPlayer.setFacing(directionTowards(eventPlayer.getEyePosition(),  eventPlayer.GoalCheckpoint), Relativity.TO_WORLD)
     eventPlayer.stopForcingPosition()
 
-rule "Reset - single cp":
+rule "Reset - Single Checkpoint":
     @Event eachPlayer
     @Condition eventPlayer.isHoldingButton(Button.RELOAD)     
     waitUntil(not eventPlayer.isHoldingButton(Button.RELOAD), 0.3)
@@ -50,13 +50,13 @@ def FullReset():
     eventPlayer.IsRacing = true
     
 
-rule "Reset - full":
+rule "Reset - Full":
     @Event eachPlayer
     @Condition eventPlayer.isHoldingButton(Button.RELOAD) 
     wait(0.5, Wait.ABORT_WHEN_FALSE)
     FullReset()
 
-rule "handle death and taxes":
+rule "Handle Death":
     @Event playerDied
     eventPlayer.respawn()
     GoToResetPoint()
@@ -104,10 +104,10 @@ rule "Finish":
             bigMessage(eventPlayer, "New personal best: {}".format(eventPlayer.Timer))
             LeaderboardEntries.remove( [i for i in LeaderboardEntries if i[0] == "{0}".format(eventPlayer)])
             LeaderboardEntries.append( [["{0}".format(eventPlayer),eventPlayer.Timer]] )
-            eventPlayer.High_Score = eventPlayer.Timer
+            eventPlayer.PersonalBest = eventPlayer.Timer
             LeaderboardUpdate()
     else: # you are not in list yet
-        eventPlayer.High_Score = eventPlayer.Timer
+        eventPlayer.PersonalBest = eventPlayer.Timer
             bigMessage(eventPlayer, "Completion time: {}".format(eventPlayer.Timer))
         if len(LeaderboardEntries) < 20: # board has room for more
             LeaderboardEntries.append( [["{0}".format(eventPlayer),eventPlayer.Timer] ])
@@ -123,9 +123,9 @@ rule "Finish":
 
 def LeaderboardUpdate():
     # this sub just enabled the global board rule. you cant triger that sub directly from player becaues it would delete huds if player left.
-    LeaderBoardRemake = true
+    LeaderboardRemake = true
     wait(0.1)
-    LeaderBoardRemake = false # set false again to prevent board locking
+    LeaderboardRemake = false # set false again to prevent board locking
 
 
  

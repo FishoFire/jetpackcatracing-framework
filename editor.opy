@@ -4,10 +4,13 @@ rule "Editor | Enable Checkpoint Selection":
     @Event eachPlayer
     @Condition wsEditorMode
     @Condition eventPlayer == hostPlayer
-    @Condition eventPlayer.isHoldingButton(Button.INTERACT)
+    @Condition eventPlayer.isHoldingButton(Button.INTERACT) and not eventPlayer.isHoldingButton(Button.ULTIMATE)
     wait(0.5, Wait.ABORT_WHEN_FALSE)
-    if not Checkpoints:
-        Checkpoints = [vect(10, 10, 10)]
+    if Checkpoints == false:
+        Checkpoints[0] = eventPlayer.getPosition()
+        eventPlayer.CurrentCheckpointIdx = 0
+        SetCheckpoints()
+
     eventPlayer.EditorMode = EditorMode.MOVE if eventPlayer.EditorMode == EditorMode.OFF else EditorMode.OFF
     if eventPlayer.EditorMode:
         smallMessage(hostPlayer, "   Checkpoint Selection Enabled")
@@ -17,34 +20,68 @@ rule "Editor | Enable Checkpoint Selection":
         StopEditorCamera()
 
 
+rule "Editor | Export Data":
+    @Event eachPlayer
+    @Condition wsEditorMode
+    @Condition eventPlayer == hostPlayer
+    @Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.ULTIMATE)
+    wait(0.5, Wait.ABORT_WHEN_FALSE)
+
+    wsEditorMode = null    
+    LeaderboardText = null
+    LeaderboardEntries = null
+    LeaderboardRemake = null
+    ColorConfig = null
+    enableInspector()
+    disableInspector()
+    smallMessage(hostPlayer, "   Map Data Exported - Check Inspector")
+
+    wsEditorMode = true
+
+
 rule "Editor | Select Checkpoint & Mode":
     @Event eachPlayer
     @Condition wsEditorMode
     @Condition eventPlayer == hostPlayer
-    @Condition eventPlayer.EditorMode > EditorMode.OFF and not eventPlayer.ActivelyEditing and (eventPlayer.getThrottle().z != 0 or eventPlayer.getThrottle().x != 0)
+    @Condition (
+        eventPlayer.EditorMode > EditorMode.OFF and not eventPlayer.ActivelyEditing and (
+            eventPlayer.getThrottle().z > 0.5 or eventPlayer.getThrottle().z < -0.5 or 
+            eventPlayer.getThrottle().x > 0.5 or eventPlayer.getThrottle().x < -0.5
+        )
+    )
 
-    if eventPlayer.getThrottle().z > 0:
+    if eventPlayer.getThrottle().z > 0.5:
         eventPlayer.CurrentCheckpointIdx += 1
         if eventPlayer.CurrentCheckpointIdx >= len(Checkpoints):
             eventPlayer.CurrentCheckpointIdx = 0
+        wait(0.1)
+        waitUntil(eventPlayer.getThrottle().z < 0.5, 0.1)
 
-    elif eventPlayer.getThrottle().z < 0:
+    elif eventPlayer.getThrottle().z < -0.5:
         eventPlayer.CurrentCheckpointIdx -= 1
         if eventPlayer.CurrentCheckpointIdx < 0:
             eventPlayer.CurrentCheckpointIdx = len(Checkpoints) - 1
+        wait(0.1)
+        waitUntil(eventPlayer.getThrottle().z > -0.5, 0.1)
     
-    if eventPlayer.getThrottle().x > 0:
+    elif eventPlayer.getThrottle().x > 0.5:
         eventPlayer.EditorMode += 1
         if eventPlayer.EditorMode >= len(EditorMode):
             eventPlayer.EditorMode = 2
+        wait(0.1)
+        waitUntil(eventPlayer.getThrottle().x < 0.5, 0.1)
 
-    elif eventPlayer.getThrottle().x < 0:
+    elif eventPlayer.getThrottle().x < -0.5:
         eventPlayer.EditorMode -= 1
         if eventPlayer.EditorMode < 2:
             eventPlayer.EditorMode = len(EditorMode) - 1
+        wait(0.1)
+        waitUntil(eventPlayer.getThrottle().x > -0.5, 0.1)
     
     SetCheckpoints()
     wait(0)
+    if ruleCondition:
+        loop()
 
 rule "Editor | Enable Checkpoint Edit":
     @Event eachPlayer

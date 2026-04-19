@@ -2,7 +2,8 @@
 
 
 rule "Init Global":
-    # disableInspector()
+    if not INSPECTOR_ON:
+        disableInspector()
     disableAnnouncer()
     disableGamemodeCompletion()
     disableScoring()
@@ -10,11 +11,13 @@ rule "Init Global":
     wait(1)
     LeaderboardText = null
     LeaderboardEntries = []
-    LeaderBoardRemake = false
+    LeaderboardRemake = false
     setMatchTime(900)
-    #setObjectiveDescription(getAllPlayers(), "{0} {1}".format(heroIcon(Hero.JETPACK_CAT), "Jetpack Cat Racing!"), HudReeval.VISIBILITY_AND_STRING)
-    
-    # Checkpoints = []
+
+    wait(LoadOrder.SETUP)
+    wsEditorMode = createWorkshopSettingBool("Editor", "Editor Mode Enabled", EDITOR_ON, 0)
+    if Checkpoints == null:
+        Checkpoints = []
   
 
 
@@ -28,10 +31,10 @@ rule "Init Player":
     eventPlayer.disablePlayerCollision()
     eventPlayer.setAbility1Enabled(false)
     eventPlayer.setStatusEffect(null, Status.INVINCIBLE, 999999)
-    chaseAtRate(eventPlayer.Timer, 0, 1, ChaseRateReeval.NONE)
-    eventPlayer.High_Score = null
+    wait(LoadOrder.SETUP + 0.1)
+    if not wsEditorMode:
+        chaseAtRate(eventPlayer.Timer, 0, 1, ChaseRateReeval.NONE)
+    eventPlayer.PersonalBest = null
     waitUntil(getTotalTimeElapsed() > 1, 1) # map variables need to load first
     FullReset()
 
-rule "Init Editor":
-    wsEditorMode = createWorkshopSettingBool("Editor", "Editor Mode Enabled", false, 0)

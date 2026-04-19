@@ -3,10 +3,6 @@
 
 rule "HUD Setup":
     wait(LoadOrder.HUDS_GLOBAL)
-    # hudSubtext(getAllPlayers(), "\n", HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-    # hudSubtext(getAllPlayers(), "Hold {0} to restart".format(inputBindingString(Button.RELOAD)), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-    # hudSubtext(getAllPlayers(), "Hold {0} to change camera".format(inputBindingString(Button.INTERACT)), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-
 
     hudText(
         getAllPlayers(), 
@@ -41,10 +37,7 @@ rule "HUD Setup":
 
     hudSubtext(localPlayer, "\nSpeed: {}\nMultiplier: x{}{}".format(localPlayer.getSpeed(), localPlayer.SpeedMultiplier/100,LeftAlign100), HudPosition.LEFT, HudOrder.SPD, ColorConfig[Customize.SPD_COLOR], HudReeval.VISIBILITY_AND_STRING)
     
-    # checkpoint icon as text
-    #createInWorldText(localPlayer.filter(lambda _: localPlayer.GoalCheckpoint != 0), GoalText, localPlayer.GoalCheckpoint, 1, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION,  ColorConfig[Customize.GOAL_COLOR] , SpecVisibility.DEFAULT)
-
-    hudSubheader(localPlayer if localPlayer.High_Score else null, "{} Personal best: {}".format(abilityIconString(Hero.JETPACK_CAT, Button.ABILITY_2) ,localPlayer.High_Score), HudPosition.RIGHT, HudOrder.PERSONAL_BEST, ColorConfig[Customize.PERSONAL_BEST], HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)
+    hudSubheader(localPlayer if localPlayer.PersonalBest else null, "{} Personal best: {}".format(abilityIconString(Hero.JETPACK_CAT, Button.ABILITY_2) ,localPlayer.PersonalBest), HudPosition.RIGHT, HudOrder.PERSONAL_BEST, ColorConfig[Customize.PERSONAL_BEST], HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.DEFAULT)
 
 
 rule "Effects Setup":
@@ -61,8 +54,8 @@ rule "Effects Setup":
         IconReeval.VISIBILITY_AND_POSITION, ColorConfig[Customize.GOAL_COLOR], true
     )
 
-rule "remake leaderboard hud":
-    @Condition LeaderBoardRemake
+rule "Remake Leaderboard HUD":
+    @Condition LeaderboardRemake
     LeaderboardEntries = sorted(LeaderboardEntries, lambda i: i[1])
 
     while len(LeaderboardText) > 0: # delete previous board (because re-val is off)
@@ -70,7 +63,7 @@ rule "remake leaderboard hud":
         del LeaderboardText[0]
     
     if len(LeaderboardEntries) < 1:
-        LeaderBoardRemake = false
+        LeaderboardRemake = false
         return
 
     if LeaderboardEntries[0]:
@@ -154,8 +147,8 @@ rule "Editor HUD":
 
     hudSubtext(
         hostPlayer, 
-        f"Hold {inputBindingString(Button.INTERACT)}: To Enable Editor Mode\n",
-        HudPosition.RIGHT, HudOrder.CONTROLS + 10, ColorConfig[Customize.CONTROL_HUD_1] , HudReeval.VISIBILITY_AND_STRING
+        f"Hold {inputBindingString(Button.INTERACT)}: To Enable Editor Mode\nHold {inputBindingString(Button.INTERACT)} & {inputBindingString(Button.ULTIMATE)}: To Export Data",
+        HudPosition.RIGHT, HudOrder.CONTROLS + 10, ColorConfig[Customize.CONTROL_HUD_1] , HudReeval.VISIBILITY
     )
 
     
