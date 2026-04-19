@@ -68,6 +68,7 @@ rule "Arrive at Checkpoint":
     @Condition distance(eventPlayer.GoalCheckpoint, eventPlayer.getEyePosition()) <= RingSize #2.65
     @Condition eventPlayer.isAlive() and eventPlayer.IsRacing
     @Condition not eventPlayer.EditorMode
+    @Condition len(Checkpoints) > 1
     # TODO: Separate starting the level vs arriving at a checkpoint IN the level?
     playEffect(eventPlayer, DynamicEffect.BUFF_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getEyePosition(), 100)
     
@@ -80,6 +81,9 @@ rule "Arrive at Checkpoint":
 rule "Finish":
     @Event eachPlayer
     @Condition not eventPlayer.GoalCheckpoint and not eventPlayer.EditorMode
+    @Condition len(Checkpoints) > 1
+    @Condition eventPlayer.CurrentCheckpointIdx == len(Checkpoints) - 1 
+    @Condition eventPlayer.isAlive()
     #@Condition eventPlayer.Timer != 0
     
     eventPlayer.IsRacing = false

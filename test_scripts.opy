@@ -60,9 +60,9 @@ rule "test huds":
 
 
 # turns bots on/off completly
-#!define bots_on false
+#!define bots_on true
 
-#!define testbot_number 11
+#!define testbot_number 10
 #!define test_team Team.2
 
 # test leaderboard (doesnt triger if action is on)
@@ -99,7 +99,7 @@ rule "bots: leaderboard test routine":
     eventPlayer.startForcingButton(Button.CROUCH)
     wait(0.1)
     eventPlayer.stopForcingButton(Button.CROUCH)
-
+    wait(10)
     # delay between each bot to variate leaderboard
     delay_per_bot(leaderboard_delay)
 

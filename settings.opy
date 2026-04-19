@@ -4,7 +4,7 @@
 
 settings {
     "main": {
-        "description": "Jetpack Cat Racing Overhaul.\nAdapted by nebula, original credit to Jashaal and Roeesun.",
+        "description": "Jetpack Cat Racing Overhaul.\nAdapted by nebula\noriginal credit to Jashaal and Roeesun.",
         "modeName": f"Jetpack Cat Racing {VERSION}"
     },
     "lobby": {
