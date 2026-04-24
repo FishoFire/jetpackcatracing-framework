@@ -12,7 +12,7 @@ globalvar ColorConfig 22
 globalvar GoalText 23
 
 # Workshop Settings
-globalvar wsEditorMode 50
+# globalvar wsEditorMode 50
 
 # HUD Related
 globalvar LeaderboardText 60 # txt entities
@@ -25,6 +25,7 @@ globalvar TestBotArray 126
 
 # Player variables
 
+playervar wsEditorOn
 playervar EditorMode
 playervar Timer
 playervar PersonalBest

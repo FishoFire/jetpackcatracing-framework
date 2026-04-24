@@ -89,7 +89,7 @@ rule "Remake Leaderboard HUD":
 
 
 rule "Editor HUD":
-    @Condition wsEditorMode
+    @Condition hostPlayer.wsEditorOn
     
     hudHeader(
         hostPlayer if localPlayer.EditorMode > EditorMode.OFF else null,

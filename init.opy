@@ -15,7 +15,7 @@ rule "Init Global":
     setMatchTime(900)
 
     wait(LoadOrder.SETUP)
-    wsEditorMode = createWorkshopSettingBool("Editor", "Editor Mode Enabled", EDITOR_ON, 0)
+    
     if Checkpoints == null:
         Checkpoints = []
   
@@ -32,7 +32,8 @@ rule "Init Player":
     eventPlayer.setAbility1Enabled(false)
     eventPlayer.setStatusEffect(null, Status.INVINCIBLE, 999999)
     wait(LoadOrder.SETUP + 0.1)
-    if not wsEditorMode:
+    eventPlayer.wsEditorOn = createWorkshopSettingBool("Editor", "Editor Mode Enabled", EDITOR_ON, 0)
+	if not eventPlayer.wsEditorOn:
         chaseAtRate(eventPlayer.Timer, 0, 1, ChaseRateReeval.NONE)
     eventPlayer.PersonalBest = null
     waitUntil(getTotalTimeElapsed() > 1, 1) # map variables need to load first

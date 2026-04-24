@@ -2,8 +2,8 @@
 
 rule "Editor | Enable Checkpoint Selection":
     @Event eachPlayer
-    @Condition wsEditorMode
     @Condition eventPlayer == hostPlayer
+    @Condition hostPlayer.wsEditorOn
     @Condition eventPlayer.isHoldingButton(Button.INTERACT) and not eventPlayer.isHoldingButton(Button.ULTIMATE)
     wait(0.5, Wait.ABORT_WHEN_FALSE)
     if Checkpoints == false:
@@ -22,12 +22,12 @@ rule "Editor | Enable Checkpoint Selection":
 
 rule "Editor | Export Data":
     @Event eachPlayer
-    @Condition wsEditorMode
     @Condition eventPlayer == hostPlayer
+    @Condition hostPlayer.wsEditorOn
     @Condition eventPlayer.isHoldingButton(Button.INTERACT) and eventPlayer.isHoldingButton(Button.ULTIMATE)
     wait(0.5, Wait.ABORT_WHEN_FALSE)
 
-    wsEditorMode = null    
+    hostPlayer.wsEditorOn = null    
     LeaderboardText = null
     LeaderboardEntries = null
     LeaderboardRemake = null
@@ -36,13 +36,13 @@ rule "Editor | Export Data":
     disableInspector()
     smallMessage(hostPlayer, "   Map Data Exported - Check Inspector")
 
-    wsEditorMode = true
+    hostPlayer.wsEditorOn = true
 
 
 rule "Editor | Select Checkpoint & Mode":
     @Event eachPlayer
-    @Condition wsEditorMode
     @Condition eventPlayer == hostPlayer
+    @Condition hostPlayer.wsEditorOn
     @Condition (
         eventPlayer.EditorMode > EditorMode.OFF and not eventPlayer.ActivelyEditing and (
             eventPlayer.getThrottle().z > 0.5 or eventPlayer.getThrottle().z < -0.5 or 
@@ -85,8 +85,8 @@ rule "Editor | Select Checkpoint & Mode":
 
 rule "Editor | Enable Checkpoint Edit":
     @Event eachPlayer
-    @Condition wsEditorMode
     @Condition eventPlayer == hostPlayer
+    @Condition hostPlayer.wsEditorOn
     @Condition eventPlayer.EditorMode == EditorMode.MOVE and eventPlayer.isHoldingButton(Button.MELEE)
     wait(0.5, Wait.ABORT_WHEN_FALSE)
     eventPlayer.ActivelyEditing = not eventPlayer.ActivelyEditing
@@ -106,8 +106,8 @@ rule "Editor | Enable Checkpoint Edit":
 
 rule "Editor | Start Editing Position":
     @Event eachPlayer
-    @Condition wsEditorMode
     @Condition eventPlayer == hostPlayer
+    @Condition hostPlayer.wsEditorOn
     @Condition eventPlayer.EditorMode == EditorMode.MOVE and eventPlayer.ActivelyEditing
     # @Condition hostPlayer.isHoldingButton(Button.MELEE)
 
@@ -119,8 +119,8 @@ rule "Editor | Start Editing Position":
 
 rule "Editor | Remove Checkpoint":
     @Event eachPlayer
-    @Condition wsEditorMode
     @Condition eventPlayer == hostPlayer
+    @Condition hostPlayer.wsEditorOn
     @Condition eventPlayer.EditorMode == EditorMode.REMOVE and eventPlayer.isHoldingButton(Button.MELEE)
 
     smallMessage(hostPlayer, "   Checkpoint Removed")
@@ -130,7 +130,7 @@ rule "Editor | Remove Checkpoint":
 
 rule "Editor | Insert Checkpoint (After Current Checkpoint)":
     @Event eachPlayer
-    @Condition wsEditorMode
+    @Condition hostPlayer.wsEditorOn
     @Condition eventPlayer == hostPlayer
     @Condition eventPlayer.EditorMode == EditorMode.INSERT and eventPlayer.isHoldingButton(Button.MELEE)
     smallMessage(hostPlayer, "   Checkpoint Inserted")
