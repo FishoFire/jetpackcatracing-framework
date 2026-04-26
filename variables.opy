@@ -52,6 +52,7 @@ subroutine SetCheckpoints
 subroutine LeaderboardUpdate
 
 #!define LeftAlign100 "                                                                                                    "
+##!define LeftAlign100 ""
 
 enum Customize: # index in the customize array for colors and such
     CREDIT_NAME,

@@ -25,8 +25,6 @@ divider(code)
 #!include "init.opy"
 #!include "huds.opy"
 #!include "racing.opy"
-
-divider(editor)
 #!include "editor.opy"
 
 test_script!include "test_scripts.opy" 
